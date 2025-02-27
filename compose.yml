@@ -1,0 +1,41 @@
+services: # コンポースするサービスたち
+    pxy-srv: # サービスの名前
+        container_name: pxy # コンテナ名
+        build: # ビルド設定
+            context: ./pxy/ # ビルドプロセスが実行されるパス。
+            dockerfile: Dockerfile # Dockerfileのパス。
+            args: # 引数
+                BASE_IMAGE_JAVA: ${BASE_IMAGE_JAVA_21} # 17
+                PROXY_SERVER_URL: ${PROXY_SERVER_URL_VELOCITY}
+                PLUGINS: |
+                    ${PLUGIN_AMBASSADOR}
+                    ${PLUGIN_VIAVERSION}
+        volumes: # ボリュームの保持
+            - ./pxy/forwarding.secret:/opt/pxy/forwarding.secret # secret file
+        ports: # ホストマシンのポートとコンテナのポートをマッピング
+            - "25565:25565" # プレイヤーはここに接続する
+        restart: always # コンテナの再起動
+        environment: # 環境変数
+            EULA: "true"
+            TZ: "Asia/Tokyo"
+        tty: true # コンテナ内で対話的操作を可能
+
+    papermc-srv: # サービスの名前
+        container_name: papermc # コンテナ名
+        build: # ビルド設定
+            context: ./papermc/ # ビルドプロセスが実行されるパス。
+            dockerfile: Dockerfile # Dockerfileのパス。
+            args: # 引数
+                BASE_IMAGE_JAVA: ${BASE_IMAGE_JAVA_16}
+                SERVER_URL: ${SERVER_PAPERMC_1_16_5}
+        volumes: # ボリュームの保持
+            # - ./log:/var/log # log
+            - ./pxy/forwarding.secret:/opt/papermc/forwarding.secret # secret file
+            # - ./papermc/share/world:/opt/papermc/world # world data
+            # - ./papermc/share/world_nether:/opt/papermc/world_nether # world data
+            # - ./papermc/share/world_the_end:/opt/papermc/world_the_end # world data
+        restart: always # コンテナの再起動
+        environment: # 環境変数
+            EULA: "true"
+            TZ: "Asia/Tokyo"
+        tty: true # コンテナ内で対話的操作を可能
