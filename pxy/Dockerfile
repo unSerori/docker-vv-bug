@@ -33,6 +33,6 @@ EXPOSE 25565
 
 # 起動時に鯖実行
 # CMD [ "java", "-Xmx512M", "-Xms512M", "-jar", "velocity.jar" ]
-CMD [ "java", "-Xmx512M", "-Xms512M", "-jar", "pxy.jar" ] 
+# CMD [ "java", "-Xmx512M", "-Xms512M", "-jar", "pxy.jar" ] 
 # java -Xmx512M -Xms512M -jar pxy.jar
-# CMD [ "sleep", "infinity" ]
+CMD [ "sleep", "infinity" ]
